@@ -219,9 +219,9 @@ Screen - Game
    opacity: 0;
    top: 75px;
    left: 65px;
-   width: 188px;
-   height: 170px;
-   background-image: url('../assets/splash.png');
+   width: 256px;
+   height: 64px;
+   background-image: url('../assets/shitpigeon_instruction.png');
    background-repeat: no-repeat;
 }
 
@@ -351,6 +351,15 @@ Screen - Game
     border-radius: 25px;
     background: white;
 }
+
+.sheet
+{
+   position: absolute;
+   width: 44px;
+   height: 44px;
+   background-image: url('../assets/shitpigeon_paper.png');
+}
+  
 
 .pipe
 {

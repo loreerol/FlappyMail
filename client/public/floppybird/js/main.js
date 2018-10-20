@@ -48,18 +48,23 @@ var pipes = new Array();
 
 var replayclickable = false;
 
+// sheets
+var sheets = new Array();
+
 //sounds
 var volume = 30;
 var soundJump = new buzz.sound("assets/sounds/sfx_wing.ogg");
-var soundScore = new buzz.sound("assets/sounds/sfx_point.ogg");
-var soundHit = new buzz.sound("assets/sounds/sfx_hit.ogg");
-var soundDie = new buzz.sound("assets/sounds/sfx_die.ogg");
+var soundScore = new Array();
+var soundHit = new Array();
+var soundDie = new buzz.sound("assets/sounds/die_1.ogg");
 var soundSwoosh = new buzz.sound("assets/sounds/sfx_swooshing.ogg");
 buzz.all().setVolume(volume);
 
 //loops
 var loopGameloop;
 var loopPipeloop;
+
+var gameTime;
 
 $(document).ready(function() {
    if(window.location.search == "?debug")
@@ -114,6 +119,11 @@ function showSplash()
    //clear out all the pipes if there are any
    $(".pipe").remove();
    pipes = new Array();
+
+
+   //clear out all the pipes if there are any
+   $(".sheet").remove();
+   sheets = new Array();
    
    //make everything animated again
    $(".animated").css('animation-play-state', 'running');
@@ -125,6 +135,15 @@ function showSplash()
 
 function startGame()
 {
+soundHit.push( new buzz.sound("assets/sounds/hit_1.ogg"));
+soundHit.push( new buzz.sound("assets/sounds/hit_2.ogg"));
+
+soundScore.push( new buzz.sound("assets/sounds/coo_1.ogg"));
+soundScore.push( new buzz.sound("assets/sounds/coo_2.ogg"));
+soundScore.push( new buzz.sound("assets/sounds/coo_3.ogg"));
+soundScore.push( new buzz.sound("assets/sounds/coo_4.ogg"));
+
+   gameTime = 0;
    currentstate = states.GameScreen;
    
    //fade out the splash
@@ -145,6 +164,8 @@ function startGame()
    var updaterate = 1000.0 / 60.0 ; //60 times a second
    loopGameloop = setInterval(gameloop, updaterate);
    loopPipeloop = setInterval(updatePipes, 1400);
+   loopSheets = setInterval(updatesheets, updaterate);
+   updatePipes();
 
    hp = startHP;
     
@@ -162,6 +183,8 @@ function updatePlayer(player)
 }
 
 function gameloop() {
+
+
    var player = $("#player");
    
    //update the player speed/position
@@ -289,9 +312,26 @@ function replaceAt(str, index, replacement) {
     return str.substr(0, index) + replacement + str.substring(index+1, str.length);
 }
 
+function sfxHit()
+{
+   var i = Math.floor(Math.random() * soundHit.length); 
+
+   soundHit[i].play();
+}
+
+function sfxScore()
+{
+   var i = Math.floor(Math.random() * soundScore.length); 
+
+   soundScore[i].stop();
+   soundScore[i].play();
+}
+
 function corruptMessage() {
 
-
+// Add a sheet of paper that goes floating away.
+   addsheet();
+   sfxHit();
     
     var msg = document.getElementById('txtmessage');
     var msgTXT = msg.innerHTML;
@@ -340,7 +380,7 @@ function setBigScore(erase)
     
    var digits = score.toString().split('');
    for(var i = 0; i < digits.length; i++)
-      elemscore.append("<img src='assets/font_big_" + digits[i] + ".png' alt='" + digits[i] + "'>");
+      elemscore.append("<img src='assets/shitpigeon_text_" + digits[i] + ".png' alt='" + digits[i] + "'>");
 
     var progressFraction = parseFloat(digits)/targetScore * 100;
     //console.log(progressFraction);
@@ -410,6 +450,7 @@ function playerDead()
    //destroy our gameloops
    clearInterval(loopGameloop);
    clearInterval(loopPipeloop);
+   clearInterval(loopSheets);
    loopGameloop = null;
    loopPipeloop = null;
 
@@ -422,11 +463,11 @@ function playerDead()
    else
    {
       //play the hit sound (then the dead sound) and then show score
-      soundHit.play().bindOnce("ended", function() {
+      // soundHit.play().bindOnce("ended", function() {
          soundDie.play().bindOnce("ended", function() {
-            showScore();
+            // showScore();
          });
-      });
+      // });
    }
 }
 
@@ -501,8 +542,7 @@ function playerScore()
 {
    score += 1;
    //play score sound
-   soundScore.stop();
-   soundScore.play();
+   sfxScore();
    setBigScore();
 }
 
@@ -519,6 +559,31 @@ function updatePipes()
    var newpipe = $('<div class="pipe animated"><div class="pipe_upper" style="height: ' + topheight + 'px;"></div><div class="pipe_lower" style="height: ' + bottomheight + 'px;"></div></div>');
    $("#flyarea").append(newpipe);
    pipes.push(newpipe);
+}
+
+function addsheet()
+{
+   // console.log('player position: '+ $("#player").position().left + ', ' + $("#player").position().top);
+   var newsheet = $('<div class="sheet" left="' + $("#player").position().left + 'px" top="' + $("#player").position().top + 'px"></div>');
+   newsheet.css({ left: ($("#player").position().left + 80), top: ($("#player").position().top + 100) });
+   $("#flyarea").append(newsheet);
+   sheets.push(newsheet);
+}
+
+function updatesheets()
+{
+   gameTime += 1.0 / 60.0;
+
+   //Do any sheets need removal?
+   // $(".sheet").filter(function() { return $(this).position().top >= -100; }).remove()
+
+   length = sheets.length;
+
+   for (i = 0; i < length; i++) {
+// console.log(Math.sin(gameTime) + "");
+      // sheets[i].css({  top: sheets[i].position().top + 0.1, transform: "rotate(" + (20 * Math.sin(gameTime * 0.25)) + "deg)" });;
+      sheets[i].css({ top: sheets[i].position().top +  ((Math.sin(gameTime * 4 + i) * 0.4 + 0.6) * 2)});;
+   }
 }
 
 var isIncompatible = {
