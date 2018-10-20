@@ -1,4 +1,5 @@
 import React, { Component} from 'react';
+import Iframe from 'react-iframe';
 
 class GamePage extends Component{
   render(){
@@ -8,7 +9,17 @@ class GamePage extends Component{
           <h1>{this.props.userLocation}</h1>
           <h1>{this.props.recipientLocation}</h1>
           <h1>{this.props.message}</h1>
+
+          <Iframe url="./floppybird/index.html"
+        width="450px"
+        height="450px"
+        id="myId"
+        className="myClassname"
+        display="initial"
+        position="relative"
+        allowFullScreen/>
         </div>
+
 
       </div>
     )
