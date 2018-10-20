@@ -432,12 +432,14 @@ Screen - Game
    color: #fff;
    background-color: olive;
 
+   font-size: 20px;
+
    position: absolute;
    bottom: 50px;
    text-align: center;
    margin-left: auto;
    margin-right: auto;   
-   width: 50%;
+   width: 100%;
    padding: 10px;
 }
 

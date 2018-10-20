@@ -336,9 +336,10 @@ function corruptMessage() {
     var msg = document.getElementById('txtmessage');
     var msgTXT = msg.innerHTML;
 
-    for(var count = 0; count < 6; count++){
+    for(var count = 0; count < 4; count++){
         var indexToCorrupt = Math.floor(Math.random() * msgTXT.length);
         msgTXT = replaceAt(msgTXT, indexToCorrupt, '*');
+        msgTXT = replaceAt(msgTXT, indexToCorrupt, '#');        
     }
 
     msg.innerHTML = msgTXT;
