@@ -2,8 +2,21 @@ import React, { Component} from 'react';
 import Iframe from 'react-iframe';
 
 class GamePage extends Component{
-  render(){
-    return (
+    componentDidMount() {
+        console.log(this.props.message);
+
+        var game = document.getElementById('game');
+        console.log(game);
+        console.log(game.contentWindow);
+        console.log(game.contentDocument);
+        console.log(game.contentWindow.document);        
+        var msg = game.contentWindow.document.getElementById('txtmessage');
+        console.log(msg);
+        
+    }
+    
+    render(){
+      return (
       <div>
         <div className="game">
           <h1>{this.props.userLocation}</h1>
@@ -13,7 +26,7 @@ class GamePage extends Component{
           <Iframe url="./floppybird/index.html"
         width="450px"
         height="450px"
-        id="myId"
+        id="game"
         className="myClassname"
         display="initial"
         position="relative"
